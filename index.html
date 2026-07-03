@@ -1,10 +1,17 @@
-Got it — important corrections noted:
+Your live site will be at:
+```
+https://evu-APC.github.io/APC-Pipeline/
+```
 
-- **Less BOR/Co-Op** = Broker of Record fees or Co-operating broker fees (deducted from gross commission)
-- **Less Other** = any other deductions
-- **Adj. Gross to APC** (Anchor Point Capital, not ACP)
+Now — the code keeps getting cut off because it's too long for one message. Let me split it into **2 parts you'll paste together**. Here's the plan:
 
-Here's the complete, corrected web application. Save this as a single `.html` file and open it in any browser (or host it on any static web server):
+1. I'll give you **Part 1** (HTML + CSS + the first half of JavaScript)
+2. Then **Part 2** (the rest of the JavaScript) immediately after
+3. You paste them **together as one file** into `index.html`
+
+---
+
+## PART 1 — Copy everything below this line:
 
 ```html
 <!DOCTYPE html>
@@ -12,500 +19,186 @@ Here's the complete, corrected web application. Save this as a single `.html` fi
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APC Deal Tracker — Anchor Point Capital</title>
+<title>APC Deal Tracker</title>
 <style>
-:root {
-  --primary: #1a2a3a;
-  --primary-light: #2c3e50;
-  --accent: #2980b9;
-  --accent-hover: #3498db;
-  --success: #27ae60;
-  --warning: #f39c12;
-  --danger: #e74c3c;
-  --bg: #f5f6fa;
-  --card: #ffffff;
-  --border: #dcdde1;
-  --text: #2c3e50;
-  --text-light: #7f8c8d;
-  --radius: 8px;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
-
-/* TOP BAR */
-.topbar { background: var(--primary); color: #fff; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-.topbar h1 { font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
-.topbar h1 span { color: var(--accent-hover); }
-.topbar-actions { display: flex; gap: 10px; align-items: center; }
-.topbar select, .topbar .btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.2); background: var(--primary-light); color: #fff; font-size: 13px; cursor: pointer; }
-.topbar select option { background: var(--primary); }
-
-.btn { padding: 8px 18px; border-radius: var(--radius); border: none; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-hover); }
-.btn-success { background: var(--success); color: #fff; }
-.btn-success:hover { background: #2ecc71; }
-.btn-danger { background: var(--danger); color: #fff; }
-.btn-danger:hover { background: #c0392b; }
-.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-.btn-outline:hover { background: var(--bg); }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
-.btn-xs { padding: 3px 8px; font-size: 11px; }
-
-/* DASHBOARD */
-.dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; padding: 20px 24px; }
-.metric-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid var(--accent); }
-.metric-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-light); margin-bottom: 6px; }
-.metric-card .value { font-size: 22px; font-weight: 700; color: var(--primary); }
-.metric-card .sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
-.metric-card.green { border-left-color: var(--success); }
-.metric-card.orange { border-left-color: var(--warning); }
-.metric-card.red { border-left-color: var(--danger); }
-
-/* TABS */
-.tabs { display: flex; gap: 0; padding: 0 24px; background: var(--card); border-bottom: 1px solid var(--border); }
-.tab { padding: 12px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-light); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* TABLE */
-.table-wrap { padding: 0 24px 24px; overflow-x: auto; }
-.toolbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; flex-wrap: wrap; gap: 10px; }
-.toolbar .search { padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius); width: 280px; font-size: 13px; outline: none; }
-.toolbar .search:focus { border-color: var(--accent); }
-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-thead th { background: var(--primary); color: #fff; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-thead th.text-right { text-align: right; }
-tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; white-space: nowrap; }
-tbody tr:hover { background: #f0f4f8; }
-tbody tr.pending { background: #fffde7; }
-.badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-block; }
-.badge-st { background: #e8f4fd; color: #2980b9; }
-.badge-mt { background: #fef3e2; color: #e67e22; }
-.badge-l { background: #e8f8f0; color: #27ae60; }
-.badge-b { background: #eae4f6; color: #8e44ad; }
-.badge-o { background: #fde8e8; color: #c0392b; }
-.text-right { text-align: right; }
-.text-center { text-align: center; }
-.text-muted { color: var(--text-light); }
-.text-success { color: var(--success); font-weight: 600; }
-.text-danger { color: var(--danger); }
-.actions-cell { display: flex; gap: 4px; }
-.empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); }
-.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-.empty-state p { margin-top: 8px; font-size: 13px; }
-
-/* MODAL */
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-start; padding: 30px 20px; overflow-y: auto; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--card); border-radius: 12px; width: 100%; max-width: 960px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--border); }
-.modal-header h2 { font-size: 18px; font-weight: 600; }
-.modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light); padding: 4px 8px; border-radius: 4px; line-height: 1; }
-.modal-close:hover { background: var(--bg); color: var(--text); }
-.modal-body { padding: 24px; max-height: 72vh; overflow-y: auto; }
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-
-/* FORM */
-.form-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-.form-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-.form-grid-2 { grid-template-columns: 1fr 1fr; }
-.form-group { display: flex; flex-direction: column; gap: 4px; }
-.form-group.full-width { grid-column: 1 / -1; }
-.form-group label { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
-.form-group input, .form-group select, .form-group textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; transition: border-color 0.2s; font-family: inherit; }
-.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(41,128,185,0.1); }
-.form-group input[readonly] { background: #f0f4f8; color: var(--text); cursor: default; }
-.form-group input.calc-field { background: #e8f8f0; font-weight: 600; }
-.form-group .hint { font-size: 11px; color: var(--text-light); font-style: italic; }
-.form-group .input-group { display: flex; align-items: stretch; }
-.form-group .input-group input { border-radius: 6px 0 0 6px; flex: 1; }
-.form-group .input-group .input-addon { padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-left: none; border-radius: 0 6px 6px 0; font-size: 12px; color: var(--text-light); display: flex; align-items: center; }
-.form-group .toggle-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
-.form-group .toggle-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-.form-group .toggle-row label { font-size: 12px; text-transform: none; font-weight: 400; color: var(--text); cursor: pointer; }
-
-/* AGENT ASSIGNMENT */
-.agent-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-.agent-row:last-child { border-bottom: none; }
-.agent-rows-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 10px; padding: 0 0 6px; }
-.agent-rows-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); }
-.agent-summary { background: var(--bg); border-radius: var(--radius); padding: 14px; margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.agent-summary .item label { font-size: 10px; text-transform: uppercase; color: var(--text-light); letter-spacing: 0.5px; }
-.agent-summary .item .val { font-size: 16px; font-weight: 700; margin-top: 2px; }
-
-/* AGENT LEADERBOARD TABLE */
-.agent-table { width: 100%; }
-.agent-table td, .agent-table th { padding: 8px 14px; }
-.progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-.progress-bar .fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .form-grid { grid-template-columns: 1fr 1fr; }
-  .form-grid-4 { grid-template-columns: 1fr 1fr; }
-  .dashboard { grid-template-columns: 1fr 1fr; }
-  .agent-row { grid-template-columns: 1fr 1fr; }
-  .agent-rows-header { display: none; }
-}
-@media (max-width: 480px) {
-  .form-grid { grid-template-columns: 1fr; }
-  .dashboard { grid-template-columns: 1fr; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f6fa;color:#2c3e50;font-size:14px}
+.topbar{background:#1a2a3a;color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar h1{font-size:18px}.topbar h1 span{color:#3498db}
+.topbar-r{display:flex;gap:10px;align-items:center}
+.topbar select{padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:#2c3e50;color:#fff;font-size:13px}
+.btn{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500}
+.btn-add{background:#27ae60;color:#fff}.btn-primary{background:#2980b9;color:#fff}
+.btn-outline{background:transparent;border:1px solid #dcdde1;color:#2c3e50}
+.btn-danger{background:#e74c3c;color:#fff}.btn-sm{padding:5px 10px;font-size:12px}
+.dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;padding:18px 24px}
+.card{background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid #2980b9}
+.card.g{border-left-color:#27ae60}.card.o{border-left-color:#f39c12}.card.r{border-left-color:#e74c3c}
+.card .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#7f8c8d;margin-bottom:4px}
+.card .val{font-size:22px;font-weight:700;color:#1a2a3a}
+.card .sub{font-size:11px;color:#7f8c8d;margin-top:3px}
+.tw{padding:0 24px 24px;overflow-x:auto}
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:14px 0;flex-wrap:wrap;gap:10px}
+.search{padding:8px 14px;border:1px solid #dcdde1;border-radius:6px;width:280px;font-size:13px;outline:none}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+thead th{background:#1a2a3a;color:#fff;padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;white-space:nowrap}
+thead th.rt{text-align:right}
+tbody td{padding:8px 12px;border-bottom:1px solid #eee;font-size:13px;white-space:nowrap}
+tbody tr:hover{background:#f0f4f8}
+.bg{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;display:inline-block}
+.bg-st{background:#e8f4fd;color:#2980b9}.bg-mt{background:#fef3e2;color:#e67e22}
+.bg-l{background:#e8f8f0;color:#27ae60}.bg-b{background:#eae4f6;color:#8e44ad}.bg-o{background:#fde8e8;color:#c0392b}
+.rt{text-align:right}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:200;justify-content:center;align-items:flex-start;padding:30px 20px;overflow-y:auto}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:720px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-hd{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #eee}
+.modal-hd h2{font-size:17px}.modal-x{background:none;border:none;font-size:24px;cursor:pointer;color:#7f8c8d;line-height:1}
+.modal-bd{padding:20px 24px;max-height:75vh;overflow-y:auto}
+.modal-ft{padding:14px 24px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:10px}
+.sec{font-size:12px;font-weight:700;text-transform:uppercase;color:#2980b9;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
+.sec:first-child{margin-top:0}
+.fg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fg4{grid-template-columns:1fr 1fr 1fr 1fr}
+.ff{display:flex;flex-direction:column;gap:3px}
+.ff label{font-size:11px;font-weight:600;color:#7f8c8d;text-transform:uppercase}
+.ff input,.ff select,.ff textarea{padding:7px 10px;border:1px solid #dcdde1;border-radius:6px;font-size:13px;font-family:inherit}
+.ff input:focus,.ff select:focus{outline:none;border-color:#2980b9}
+.ff input[readonly]{background:#f0f4f8}.ff input.calc{background:#e8f8f0;font-weight:600}
+.ff .hint{font-size:10px;color:#7f8c8d;font-style:italic}
+.ff .ig{display:flex}.ff .ig input{border-radius:6px 0 0 6px;flex:1;min-width:0}
+.ff .ig span{padding:7px 8px;background:#f5f6fa;border:1px solid #dcdde1;border-left:none;border-radius:0 6px 6px 0;font-size:12px;color:#7f8c8d}
+.chk{display:flex;align-items:center;gap:6px;margin-top:3px}
+.chk input[type=checkbox]{width:15px;height:15px}.chk label{font-size:12px;text-transform:none;font-weight:400;color:#2c3e50}
+.ar{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.arh{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;padding-bottom:4px}
+.arh span{font-size:10px;font-weight:700;text-transform:uppercase;color:#7f8c8d}
+.asum{background:#f5f6fa;border-radius:8px;padding:14px;margin-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.asum .lbl{font-size:10px;text-transform:uppercase;color:#7f8c8d}.asum .val{font-size:18px;font-weight:700;margin-top:2px}
+.green{color:#27ae60}
+@media(max-width:768px){.fg,.fg4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.fg,.fg4{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
 <div class="topbar">
-  <h1>⚓ <span>Anchor Point Capital</span> — Deal Tracker</h1>
-  <div class="topbar-actions">
-    <select id="yearFilter" title="Filter by year"></select>
-    <button class="btn btn-primary" onclick="exportCSV()" title="Export to CSV">⬇ Export</button>
-  </div>
+<h1>⚓ <span>Anchor Point Capital</span> — Deal Tracker</h1>
+<div class="topbar-r">
+<select id="yrF" onchange="render()"></select>
+<button class="btn" style="background:#2c3e50;color:#fff;border:1px solid rgba(255,255,255,.2)" onclick="exportCSV()">⬇ Export</button>
+</div>
+</div>
+<div class="dash" id="dash"></div>
+<div class="tw">
+<div class="toolbar">
+<input class="search" id="sBox" placeholder="Search deals..." oninput="render()">
+<button class="btn btn-add" onclick="openModal()">＋ New Deal</button>
+</div>
+<div style="overflow-x:auto">
+<table>
+<thead><tr>
+<th>#</th><th>Type</th><th>Rep</th><th>COE</th><th>Deal Name</th><th>Address</th><th>City</th><th>St</th>
+<th class="rt">Price</th><th class="rt">Fee %</th><th class="rt">Gross Comm.</th>
+<th class="rt">Less BOR/Co-Op</th><th class="rt">Less Other</th><th class="rt">Adj. Gross to APC</th>
+<th class="rt">Wire Amt</th><th>Wire Confirmed</th><th>Agents</th><th></th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
 </div>
 
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard"></div>
-
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab active" data-tab="deals" onclick="switchTab('deals')">📋 Deals</div>
-  <div class="tab" data-tab="agents" onclick="switchTab('agents')">👥 Agent Production</div>
-  <div class="tab" data-tab="breakdown" onclick="switchTab('breakdown')">📊 Deal Breakdown</div>
+<div class="overlay" id="dealModal">
+<div class="modal">
+<div class="modal-hd"><h2 id="mTitle">New Deal</h2><button class="modal-x" onclick="closeModal()">&times;</button></div>
+<div class="modal-bd">
+<div class="sec">Deal Information</div>
+<div class="fg">
+<div class="ff"><label>Deal Name *</label><input id="f_name"></div>
+<div class="ff"><label>Address *</label><input id="f_addr"></div>
+<div class="ff"><label>City</label><input id="f_city"></div>
+<div class="ff"><label>State</label><input id="f_state" maxlength="2" style="text-transform:uppercase"></div>
+<div class="ff"><label>COE *</label><input type="date" id="f_coe"></div>
+<div class="ff"><label>Type</label><select id="f_type"><option value="ST">ST — Single Tenant</option><option value="MT">MT — Multi-Tenant</option></select></div>
+<div class="ff"><label>Representation</label><select id="f_rep"><option value="L">L — Listed</option><option value="B">B — Buyside</option><option value="O">O — Off-Market</option></select></div>
 </div>
-
-<!-- DEALS TAB -->
-<div class="tab-content active" id="tab-deals">
-  <div class="table-wrap">
-    <div class="toolbar">
-      <input type="text" class="search" id="searchInput" placeholder="Search deals by name, address, city, agent..." oninput="renderDeals()">
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-success" onclick="openDealModal()">＋ New Deal</button>
-      </div>
-    </div>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Type</th>
-            <th>Rep</th>
-            <th>COE</th>
-            <th>Deal Name</th>
-            <th>Location</th>
-            <th class="text-right">Price</th>
-            <th class="text-right">Fee %</th>
-            <th class="text-right">Gross Comm.</th>
-            <th class="text-right">Less BOR/Co-Op</th>
-            <th class="text-right">Less Other</th>
-            <th class="text-right">Adj. Gross to APC</th>
-            <th class="text-right">Wire Amt</th>
-            <th>Wire Confirmed</th>
-            <th>Agents</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="dealsTableBody"></tbody>
-      </table>
-    </div>
-  </div>
+<div class="sec">Financials</div>
+<div class="fg fg4">
+<div class="ff"><label>Price *</label><div class="ig"><input id="f_price" oninput="calc()"><span>$</span></div></div>
+<div class="ff"><label>Gross Fee %</label><div class="ig"><input id="f_pct" oninput="calc()"><span>%</span></div></div>
+<div class="ff"><label>Gross Commission</label><div class="ig"><input id="f_gc" class="calc" oninput="calc()"><span>$</span></div>
+<div class="chk"><input type="checkbox" id="f_fx" onchange="togFx()"><label for="f_fx">Fixed (override %)</label></div></div>
+<div class="ff"></div>
+<div class="ff"><label>Less BOR / Co-Op</label><div class="ig"><input id="f_bor" oninput="calc()"><span>$</span></div><span class="hint">Broker of Record or Co-op fee</span></div>
+<div class="ff"><label>Less Other</label><div class="ig"><input id="f_oth" oninput="calc()"><span>$</span></div><span class="hint">Any other deductions</span></div>
+<div class="ff"><label>Adj. Gross to APC</label><input id="f_adj" class="calc" readonly></div>
+<div class="ff"></div>
+<div class="ff"><label>Wire Amount</label><div class="ig"><input id="f_wire"><span>$</span></div></div>
+<div class="ff"><label>Wire Confirmed</label><input type="date" id="f_wdt"></div>
+<div class="ff"><label>File Done</label><select id="f_fd"><option value="">—</option><option value="Y">Yes</option></select></div>
+<div class="ff"><label>Signed Agent Disb</label><select id="f_sd"><option value="">—</option><option value="Y">Yes</option></select></div>
 </div>
-
-<!-- AGENTS TAB -->
-<div class="tab-content" id="tab-agents">
-  <div class="table-wrap">
-    <div class="toolbar">
-      <h3 style="font-size:15px;">Agent Production — <span id="agentYearLabel"></span></h3>
-      <button class="btn btn-outline btn-sm" onclick="openAgentManagerModal()">⚙ Manage Roster</button>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="agent-table">
-        <thead>
-          <tr>
-            <th>Agent</th>
-            <th class="text-right"># Deals</th>
-            <th class="text-right">Gross Deal Value</th>
-            <th class="text-right">Gross Commission Share</th>
-            <th class="text-right">Total Checks</th>
-            <th class="text-right">Current Split Rate</th>
-            <th>Production</th>
-          </tr>
-        </thead>
-        <tbody id="agentsTableBody"></tbody>
-      </table>
-    </div>
-  </div>
+<div class="sec">Agent Assignments</div>
+<div class="arh"><span>Agent</span><span>Deal Share %</span><span>Partner Rate</span><span></span></div>
+<div id="aRows"></div>
+<button class="btn btn-outline btn-sm" onclick="addAR()" style="margin-top:8px">＋ Add Agent</button>
+<div class="sec">Analyst</div>
+<div class="fg" style="grid-template-columns:1fr 1fr 2fr">
+<div class="ff"><label>Analyst Fee</label><div class="ig"><input id="f_af" oninput="calcSum()"><span>$</span></div></div>
+<div class="ff"><label>Analyst Name</label><input id="f_an"></div>
+<div class="ff"></div>
 </div>
-
-<!-- BREAKDOWN TAB -->
-<div class="tab-content" id="tab-breakdown">
-  <div class="table-wrap">
-    <div class="toolbar"><h3 style="font-size:15px;">Deal Breakdown — <span id="breakdownYearLabel"></span></h3></div>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th class="text-right">Count</th>
-            <th class="text-right">% of Deals</th>
-            <th class="text-right">Total Value</th>
-            <th class="text-right">Gross Commission</th>
-          </tr>
-        </thead>
-        <tbody id="breakdownTableBody"></tbody>
-      </table>
-    </div>
-  </div>
+<div class="asum" id="aSum" style="display:none">
+<div><div class="lbl">All Checks Total</div><div class="val" id="s_chk">$0</div></div>
+<div><div class="lbl">House Split (APC)</div><div class="val green" id="s_hse">$0</div></div>
+<div><div class="lbl">House % of Adj Gross</div><div class="val" id="s_pct">0%</div></div>
 </div>
-
-<!-- DEAL MODAL -->
-<div class="modal-overlay" id="dealModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="dealModalTitle">New Deal</h2>
-      <button class="modal-close" onclick="closeDealModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <!-- DEAL INFO -->
-      <div class="form-section-title">Deal Information</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Deal Name *</label>
-          <input type="text" id="fd_dealName" placeholder="e.g. Starbucks">
-        </div>
-        <div class="form-group">
-          <label>Address *</label>
-          <input type="text" id="fd_address" placeholder="Street address">
-        </div>
-        <div class="form-group">
-          <label>City</label>
-          <input type="text" id="fd_city" placeholder="City">
-        </div>
-        <div class="form-group">
-          <label>State</label>
-          <input type="text" id="fd_state" placeholder="e.g. TX" maxlength="2" style="text-transform:uppercase;">
-        </div>
-        <div class="form-group">
-          <label>Close of Escrow (COE) *</label>
-          <input type="date" id="fd_coe">
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select id="fd_type">
-            <option value="ST">ST — Single Tenant</option>
-            <option value="MT">MT — Multi-Tenant</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Representation</label>
-          <select id="fd_rep">
-            <option value="L">L — Listed (Exclusive)</option>
-            <option value="B">B — Buyside</option>
-            <option value="O">O — Unlisted (Off-Market)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- FINANCIALS -->
-      <div class="form-section-title" style="margin-top:8px;">Financials</div>
-      <div class="form-grid form-grid-4">
-        <div class="form-group">
-          <label>Dollar Amount (Price) *</label>
-          <div class="input-group">
-            <input type="text" id="fd_price" placeholder="0" oninput="calcCommission()">
-            <span class="input-addon">$</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Gross Fee %</label>
-          <div class="input-group">
-            <input type="text" id="fd_feePercent" placeholder="e.g. 5" oninput="calcCommission()">
-            <span class="input-addon">%</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Gross Commission</label>
-          <input type="text" id="fd_grossComm" class="calc-field" placeholder="Auto-calculated" oninput="onGrossCommManualEdit()">
-          <div class="toggle-row">
-            <input type="checkbox" id="fd_fixedComm" onchange="toggleFixedComm()">
-            <label for="fd_fixedComm">Fixed amount (override %)</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>&nbsp;</label>
-        </div>
-        <div class="form-group">
-          <label>Less BOR / Co-Op</label>
-          <div class="input-group">
-            <input type="text" id="fd_lessBor" placeholder="0" oninput="calcAdjGross()">
-            <span class="input-addon">$</span>
-          </div>
-          <span class="hint">Broker of Record or Co-operating broker fee</span>
-        </div>
-        <div class="form-group">
-          <label>Less Other</label>
-          <div class="input-group">
-            <input type="text" id="fd_lessOther" placeholder="0" oninput="calcAdjGross()">
-            <span class="input-addon">$</span>
-          </div>
-          <span class="hint">Any other deductions</span>
-        </div>
-        <div class="form-group">
-          <label>Adj. Gross to APC</label>
-          <input type="text" id="fd_adjGross" class="calc-field" readonly placeholder="Auto-calculated">
-        </div>
-        <div class="form-group">
-          <label>&nbsp;</label>
-        </div>
-        <div class="form-group">
-          <label>Wire Amount</label>
-          <div class="input-group">
-            <input type="text" id="fd_wireAmt" placeholder="0">
-            <span class="input-addon">$</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Wire Confirmed Date</label>
-          <input type="date" id="fd_wireDate">
-        </div>
-        <div class="form-group">
-          <label>File Done</label>
-          <select id="fd_fileDone"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select>
-        </div>
-        <div class="form-group">
-          <label>Signed Agent Disb</label>
-          <select id="fd_signedDisb"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select>
-        </div>
-      </div>
-
-      <!-- ANALYST -->
-      <div class="form-section-title" style="margin-top:8px;">Analyst</div>
-      <div class="form-grid form-grid-4">
-        <div class="form-group">
-          <label>Analyst Fee</label>
-          <div class="input-group">
-            <input type="text" id="fd_analystFee" placeholder="0" oninput="calcAgentSummary()">
-            <span class="input-addon">$</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Analyst Name</label>
-          <input type="text" id="fd_analystName" placeholder="e.g. Figley">
-        </div>
-      </div>
-
-      <!-- AGENT ASSIGNMENTS -->
-      <div class="form-section-title" style="margin-top:8px;">Agent Assignments</div>
-      <div class="agent-rows-header">
-        <span>Agent</span>
-        <span>Deal Share %</span>
-        <span>Partner Split Rate</span>
-        <span>Gross Share</span>
-        <span>Check Amount</span>
-        <span></span>
-      </div>
-      <div id="agentAssignments"></div>
-      <button class="btn btn-outline btn-sm" onclick="addAgentRow()" style="margin-top:8px;">＋ Add Agent</button>
-
-      <div class="agent-summary" id="agentSummary" style="display:none;">
-        <div class="item">
-          <label>All Checks Total</label>
-          <div class="val" id="sumChecks">$0</div>
-        </div>
-        <div class="item">
-          <label>House Split (APC)</label>
-          <div class="val text-success" id="houseSplit">$0</div>
-        </div>
-        <div class="item">
-          <label>House % of Adj. Gross</label>
-          <div class="val" id="housePercent">0%</div>
-        </div>
-      </div>
-
-      <!-- NOTES -->
-      <div class="form-section-title" style="margin-top:20px;">Notes</div>
-      <div class="form-group full-width">
-        <textarea id="fd_notes" rows="2" placeholder="Optional notes..." style="width:100%;"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeDealModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveDeal()">💾 Save Deal</button>
-    </div>
-  </div>
+<div class="sec">Notes</div>
+<div class="ff"><textarea id="f_notes" rows="2" style="width:100%"></textarea></div>
 </div>
-
-<!-- AGENT MANAGER MODAL -->
-<div class="modal-overlay" id="agentManagerModal">
-  <div class="modal" style="max-width:500px;">
-    <div class="modal-header">
-      <h2>Agent Roster</h2>
-      <button class="modal-close" onclick="closeAgentManagerModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div id="agentRosterList"></div>
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <input type="text" id="newAgentName" placeholder="New agent name" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;">
-        <button class="btn btn-success btn-sm" onclick="addAgent()">Add</button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" onclick="closeAgentManagerModal()">Done</button>
-    </div>
-  </div>
+<div class="modal-ft">
+<button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+<button class="btn btn-primary" onclick="saveDeal()">💾 Save Deal</button>
 </div>
-
-<!-- DEAL DETAIL MODAL -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal" style="max-width:800px;">
-    <div class="modal-header">
-      <h2 id="detailTitle">Deal Detail</h2>
-      <button class="modal-close" onclick="closeDetailModal()">&times;</button>
-    </div>
-    <div class="modal-body" id="detailBody"></div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeDetailModal()">Close</button>
-      <button class="btn btn-primary" id="detailEditBtn">✏ Edit</button>
-    </div>
-  </div>
+</div>
 </div>
 
 <script>
-// ======================== DATA ========================
-const DEFAULT_AGENTS = ['Dignam','Skinner','Sarris','Ito','Thomas','Sparks','Demag','Purvis','Vu','Figley'];
-let agents = JSON.parse(localStorage.getItem('apc_agents')) || [...DEFAULT_AGENTS];
-let deals = JSON.parse(localStorage.getItem('apc_deals')) || [];
-let editingDealId = null;
+var AGENTS=['Dignam','Skinner','Sarris','Ito','Thomas','Sparks','Demag','Purvis','Vu','Figley'];
+var deals=JSON.parse(localStorage.getItem('apc_deals')||'[]');
+var editId=null;
+function persist(){localStorage.setItem('apc_deals',JSON.stringify(deals))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,6)}
+function N(v){return parseFloat(String(v||'').replace(/[^0-9.\-]/g,''))||0}
+function $(id){return document.getElementById(id)}
+function fmt(v){return'$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fK(v){return Math.abs(v)>=1e6?'$'+(v/1e6).toFixed(2)+'M':Math.abs(v)>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+v.toFixed(0)}
+function ds(d){if(!d)return'—';return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 
-function save() {
-  localStorage.setItem('apc_deals', JSON.stringify(deals));
-  localStorage.setItem('apc_agents', JSON.stringify(agents));
-}
+function getYears(){var y={};deals.forEach(function(d){y[new Date(d.coe+'T00:00:00').getFullYear()]=1});y[new Date().getFullYear()]=1;return Object.keys(y).map(Number).sort(function(a,b){return b-a})}
+function buildYF(){var s=$('yrF'),c=s.value,yrs=getYears();s.innerHTML='<option value="all">All Years</option>';yrs.forEach(function(y){s.innerHTML+='<option value="'+y+'">'+y+'</option>'});if(c)s.value=c;if(!s.value)s.value=new Date().getFullYear()}
+function fDeals(){var y=$('yrF').value,q=$('sBox').value.toLowerCase();return deals.filter(function(d){if(y!=='all'&&new Date(d.coe+'T00:00:00').getFullYear()!=y)return false;if(q){var h=(d.name+' '+d.addr+' '+d.city+' '+d.state+' '+(d.agents||[]).map(function(a){return a.name}).join(' ')).toLowerCase();if(h.indexOf(q)===-1)return false}return true})}
+function dealNum(deal){var yr=new Date(deal.coe+'T00:00:00').getFullYear();var s=deals.filter(function(d){return new Date(d.coe+'T00:00:00').getFullYear()===yr});s.sort(function(a,b){return a.coe<b.coe?-1:a.coe>b.coe?1:(a._ts||0)-(b._ts||0)});for(var i=0;i<s.length;i++){if(s[i].id===deal.id)return i+1}return s.length+1}
 
-function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
+function renderDash(){var fd=fDeals(),vol=fd.length,tv=0,gc=0,adj=0,w=0;fd.forEach(function(d){tv+=N(d.price);gc+=N(d.grossComm);adj+=N(d.adjGross);if(d.wireDate)w++});var yr=$('yrF').value;yr=yr==='all'?'All Years':yr;$('dash').innerHTML='<div class="card"><div class="lbl">Deals ('+yr+')</div><div class="val">'+vol+'</div><div class="sub">'+w+' wired</div></div><div class="card o"><div class="lbl">Total Deal Value</div><div class="val">'+fK(tv)+'</div><div class="sub">'+fmt(tv)+'</div></div><div class="card g"><div class="lbl">Gross Commissions</div><div class="val">'+fK(gc)+'</div><div class="sub">'+fmt(gc)+'</div></div><div class="card"><div class="lbl">Adj. Gross to APC</div><div class="val">'+fK(adj)+'</div><div class="sub">'+fmt(adj)+'</div></div><div class="card r"><div class="lbl">Avg Fee Rate</div><div class="val">'+(tv>0?((gc/tv)*100).toFixed(2)+'%':'—')+'</div></div>'}
 
-// ======================== UTILITY ========================
-function num(v) { if (v === '' || v === null || v === undefined) return 0; return parseFloat(String(v).replace(/[^0-9.\-]/g, '')) || 0; }
-function fmt(n) {
-  if (n === 0) return '$0';
-  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-function fmtShort(n) {
-  if (Math.abs(n) >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
-  if (Math.abs(n) >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
-  return '$' + n.toFixed(0);
-}
-function pct(n) { return (n * 100).toFixed(2) + '%'; }
-function dateStr(d) {
-  if (!d) return '—';
-  const dt = new Date(d + 'T00:00:00');
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
+function renderTable(){var fd=fDeals();fd.sort(function(a,b){return a.coe<b.coe?-1:a.coe>b.coe?1:0});if(!fd.length){$('tbody').innerHTML='<tr><td colspan="18" style="text-align:center;padding:60px;color:#7f8c8d"><div style="font-size:40px">📋</div><p style="margin-top:8px">No deals yet — click <b>＋ New Deal</b></p></td></tr>';return}var h='';fd.forEach(function(d){var dn=dealNum(d);var ag=(d.agents||[]).map(function(a){return a.name}).join(', ')||'—';h+='<tr'+(d.wireDate?'':' style="background:#fffde7"')+'><td>'+dn+'</td><td><span class="bg '+(d.type==='MT'?'bg-mt':'bg-st')+'">'+d.type+'</span></td><td><span class="bg '+(d.rep==='L'?'bg-l':d.rep==='B'?'bg-b':'bg-o')+'">'+(d.rep==='L'?'Listed':d.rep==='B'?'Buyside':'Off-Mkt')+'</span></td><td>'+ds(d.coe)+'</td><td><b>'+esc(d.name)+'</b></td><td>'+esc(d.addr)+'</td><td>'+esc(d.city)+'</td><td>'+esc(d.state).toUpperCase()+'</td><td class="rt">'+fmt(N(d.price))+'</td><td class="rt">'+(N(d.feePct)>0?(N(d.feePct)*100).toFixed(2)+'%':'Fixed')+'</td><td class="rt">'+fmt(N(d.grossComm))+'</td><td class="rt">'+fmt(N(d.lessBor))+'</td><td class="rt">'+fmt(N(d.lessOther))+'</td><td class="rt"><b>'+fmt(N(d.adjGross))+'</b></td><td class="rt">'+fmt(N(d.wireAmt))+'</td><td>'+(d.wireDate?'<span style="color:#27ae60;font-weight:600">✓ '+ds(d.wireDate)+'</span>':'<span style="color:#aaa">Pending</span>')+'</td><td>'+esc(ag)+'</td><td><button class="btn btn-sm btn-outline" onclick="editDeal(\''+d.id+'\')">✏</button> <button class="btn btn-sm btn-danger" onclick="delDeal(\''+d.id+'\')">✕</button></td></tr>'});$('tbody').innerHTML=h}
+function render(){buildYF();renderDash();renderTable()}
 
-// ======================== DEAL NUMBERING ========================
-function getDealNumber(deal, allDeals) {
-  const yr = new Date(deal.coe + 'T00:00:00').getFullYear();
+function openModal(){editId=null;$('mTitle').textContent='New Deal';['f_name','f_addr','f_city','f_state','f_coe','f_price','f_pct','f_gc','f_bor','f_oth','f_adj','f_wire','f_wdt','f_af','f_an','f_notes'].forEach(function(id){$(id).value=''});$('f_type').value='ST';$('f_rep').value='O';$('f_fd').value='';$('f_sd').value='';$('f_fx').checked=false;$('f_gc').readOnly=false;$('f_gc').classList.add('calc');$('aRows').innerHTML='';$('aSum').style.display='none';addAR();$('dealModal').classList.add('show')}
+function closeModal(){$('dealModal').classList.remove('show')}
+
+function editDeal(id){var d=deals.find(function(x){return x.id===id});if(!d)return;editId=id;$('mTitle').textContent='Edit — '+d.name;$('f_name').value=d.name||'';$('f_addr').value=d.addr||'';$('f_city').value=d.city||'';$('f_state').value=d.state||'';$('f_coe').value=d.coe||'';$('f_type').value=d.type||'ST';$('f_rep').value=d.rep||'O';$('f_price').value=d.price||'';$('f_pct').value=N(d.feePct)>0?(N(d.feePct)*100).toString():'';$('f_gc').value=d.grossComm||'';$('f_fx').checked=!!d.fixedComm;$('f_gc').readOnly=!d.fixedComm;if(d.fixedComm)$('f_gc').classList.remove('calc');else $('f_gc').classList.add('calc');$('f_bor').value=d.lessBor||'';$('f_oth').value=d.lessOther||'';$('f_adj').value=d.adjGross||'';$('f_wire').value=d.wireAmt||'';$('f_wdt').value=d.wireDate||'';$('f_fd').value=d.fileDone||'';$('f_sd').value=d.signedDisb||'';$('f_af').value=d.analystFee||'';$('f_an').value=d.analystName||'';$('f_notes').value=d.notes||'';$('aRows').innerHTML='';if(d.agents&&d.agents.length){d.agents.forEach(function(a){addAR(a.name,a.share,a.rate)})}else{addAR()}calcSum();$('dealModal').classList.add('show')}
+
+function delDeal(id){if(!confirm('Delete this deal?'))return;deals=deals.filter(function(x){return x.id!==id});persist();render()}
+
+function calc(){var p=N($('f_price').value),pct=N($('f_pct').value)/100;if(!$('f_fx').checked&&pct>0){$('f_gc').value=(p*pct).toFixed(2)}var gc=N($('f_gc').value),bor=N($('f_bor').value),oth=N($('f_oth').value);$('f_adj').value=(gc-bor-oth).toFixed(2);calcSum()}
+function togFx(){if($('f_fx').checked){$('f_gc').readOnly=false;$('f_gc').classList.remove('calc');$('f_gc').focus()}else{$('f_gc').classList.add('calc');calc()}}
+
+function addAR(name,share,rate){var row=document.createElement('div');row.className='ar';var opts='<option value="">— Select —</option>';AGENTS.forEach(function(a){opts+='<option value="'+a+'"'+(a===name?' selected':'')+'>'+a+'</option>'});row.innerHTML='<div class="ff"><select onchange="calcSum()">'+opts+'</select></div><div class="ff"><div class="ig"><input value="'+(share||'')+'" placeholder="e.g. 100" oninput="calcSum()"><span>%</span></div></div><div class="ff"><div class="ig"><input value="'+(rate||'')+'" placeholder="e.g. 0.5" oninput="calcSum()"><span>rate</span></div></div><div><button class="btn btn-danger btn-sm" onclick="this.closest(\'.ar\').remove();calcSum()">✕</button></div>';$('aRows').appendChild(row)}
+
+function calcSum(){var rows=$('aRows').querySelectorAll('.ar');var adj=N($('f_adj').value),afee=N($('f_af').value);var total=0;rows.forEach(function(r){var ins=r.querySelectorAll('input');var share=N(ins[0].value)/100;var rate=N(ins[1].value);if(share>0&&rate>0){var agentGross=adj*share;var analystPortion=afee*share;var check=(agentGross-analystPortion)*rate;if(check<0)check=0;total+=check}});if(rows.length>0){$('aSum').style.display='grid';$('s_chk').textContent=fmt(total);var house=adj-total;$('s_hse').textContent=fmt(house);$('s_pct').textContent=adj>0?((house/adj)*100).toFixed(1)+'%':'0%'}else{$('aSum').style.display='none'}}
+
+function saveDeal(){var name=$('f_name').value.trim(),coe=$('f_coe').value,price=$('f_price').value;if(!name){alert('Deal Name is required');return}if(!coe){alert('COE date is required');return}if(!price){alert('Price is required');return}var ags=[];$('aRows').querySelectorAll('.ar').forEach(function(r){var sel=r.querySelector('select');var ins=r.querySelectorAll('input');if(sel.value)ags.push({name:sel.value,share:ins[0].value,rate:ins[1].value})});var deal={id:editId||uid(),name:name,addr:$('f_addr').value.trim(),city:$('f_city').value.trim(),state:$('f_state').value.trim().toUpperCase(),coe:coe,type:$('f_type').value,rep:$('f_rep').value,price:price,feePct:N($('f_pct').value)/100,grossComm:$('f_gc').value,fixedComm:$('f_fx').checked,lessBor:$('f_bor').value,lessOther:$('f_oth').value,adjGross:$('f_adj').value,wireAmt:$('f_wire').value,wireDate:$('f_wdt').value,fileDone:$('f_fd').value,signedDisb:$('f_sd').value,analystFee:$('f_af').value,analystName:$('f_an').value,agents:ags,notes:$('f_notes').value,_ts:editId?(deals.find(function(x){return x.id===editId})||{})._ts||Date.now():Date.now()};if(editId){var i=deals.findIndex(function(x){return x.id===editId});if(i>-1)deals[i]=deal}else{deals.push(deal)}persist();closeModal();render()}
+
+function exportCSV(){var fd=fDeals();fd.sort(function(a,b){return a.coe<b.coe?-1:a.coe>b.coe?1:0});var rows=[['#','Type','Rep','COE','Deal Name','Address','City','State','Price','Fee %','Gross Commission','Less BOR/Co-Op','Less Other','Adj Gross to APC','Wire Amount','Wire Confirmed','Agents','Notes']];fd.forEach(function(d,i){rows.push([dealNum(d),d.type,d.rep,d.coe,d.name,d.addr,d.city,d.state,N(d.price),N(d.feePct)>0?(N(d.feeP
